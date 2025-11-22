@@ -75,3 +75,29 @@ input[type="email"]:focus {
 input[type="email"]::placeholder {
   color: var(--text-secondary);
 }
+
+/* Responsive Styles (mobile) */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  /* i also want the email form placeholder to be smaller */
+  p,
+  input[type="email"] {
+    font-size: 1rem;
+  }
+
+  input[type="email"] {
+    max-width: 300px;
+    padding: 12px 15px;
+  }
+
+  #logo {
+    /* i didn't follow the raw px responsive style */
+    /* my 100% width approach already takes care of the responsiveness */
+    /* width: 100px; */
+    /* height: 100px; */
+    margin-bottom: 1.5rem;
+  }
+}
