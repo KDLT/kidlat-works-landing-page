@@ -76,6 +76,24 @@ input[type="email"]::placeholder {
   color: var(--text-secondary);
 }
 
+input.invalid {
+  border-color: #dc3545 !important;
+}
+
+.error-message {
+  color: #dc3545;
+  /* red for errors */
+  font-size: 0.93rem;
+  margin-top: 0.5rem;
+  display: block;
+  height: 1.2rem;
+  /* visibility: hidden; */
+}
+
+.editing {
+  color: var(--text-secondary)
+}
+
 /* Responsive Styles (mobile) */
 @media (max-width: 768px) {
   h1 {
