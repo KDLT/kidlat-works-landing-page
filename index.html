@@ -10,16 +10,27 @@
 
   <body>
     <main>
-      <img id="logo" src="logo.svg" alt="kidlat-works-logo" height="200vh" />
+      <img id="logo" src="logo.svg" alt="kidlat-works-logo" />
       <h1>KIDLAT WORKS</h1>
-      <p>Let's Cook. 2026.</p>
-      <input
-        id="emailInput"
-        name="email"
-        type="email"
-        placeholder="your@email.here"
-      />
-      <span id="emailError" class="error-message editing"></span>
+      <p>
+        <span id="dynamicMessage"> Let's Cook. 2026. </span>
+      </p>
+      <div id="formContainer">
+        <input
+          id="emailInput"
+          name="email"
+          type="email"
+          placeholder="your@email.here"
+        />
+        <span id="emailError" class="error-message editing"></span>
+        <input
+          id="nameInput"
+          type="text"
+          name="name"
+          placeholder="First name will do."
+          class="name-input hidden"
+        />
+      </div>
     </main>
   </body>
 </html>
