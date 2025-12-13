@@ -3,7 +3,7 @@
   <head>
     <link rel="stylesheet" href="./style.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <script type="module" src="script.js"></script>
+    <script type="module" src="main.js"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KIDLAT WORKS - Cooking...</title>
@@ -12,25 +12,31 @@
   <body>
     <main>
       <img id="logo" src="/logo.svg" alt="kidlat-works-logo" />
-      <h1>KIDLAT WORKS</h1>
-      <p>
-        <span id="dynamicMessage"> Let's Cook. 2026. </span>
-      </p>
-      <div id="formContainer">
-        <input
-          id="emailInput"
-          name="email"
-          type="email"
-          placeholder="your@email.here"
-        />
-        <span id="emailError" class="error-message editing"></span>
-        <input
-          id="nameInput"
-          type="text"
-          name="name"
-          placeholder="First name will do."
-          class="name-input hidden"
-        />
+      <div id="right">
+        <h1>KIDLAT WORKS</h1>
+        <p>
+          <span id="dynamicMessage"> Let's Cook. 2026. </span>
+        </p>
+        <div id="formContainer">
+          <form id="emailForm" novalidate>
+            <input
+              id="emailInput"
+              name="email"
+              type="email"
+              placeholder="your@email.here"
+            />
+            <span id="emailError" class="error-message editing"></span>
+          </form>
+          <form id="nameForm" novalidate>
+            <input
+              id="nameInput"
+              type="text"
+              name="name"
+              placeholder="First name will do."
+              class="name-input hidden"
+            />
+          </form>
+        </div>
       </div>
     </main>
   </body>

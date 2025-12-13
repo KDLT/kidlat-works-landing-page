@@ -1,21 +1,9 @@
-import { dynamicMessage, emailError, emailInput, nameInput } from "./script";
+export const emailInput = document.getElementById("emailInput");
+export const nameInput = document.getElementById("nameInput");
 
-export function showNameInput() {
-  nameInput.classList.remove("hidden");
-  nameInput.focus();
-  dynamicMessage.textContent = "Almost there. Name please.";
-}
+export const emailForm = document.getElementById("emailForm");
+export const nameForm = document.getElementById("nameForm");
 
-export function styleOnErrorFeedback() {
-  // applied upon submitting invalid or blank email
-  emailError.classList.remove("editing");
-  emailInput.classList.add("invalid");
-}
-
-export function styleOnEditMode() {
-  // applied when the user is actively inputting email
-  // removes the red text and border, easier on the eyes
-  emailInput.classList.remove("invalid");
-  emailError.classList.add("editing");
-  // emailError.textContent = "";
-}
+export const emailError = document.getElementById("emailError");
+export const formContainer = document.getElementById("formContainer");
+export const dynamicMessage = document.getElementById("dynamicMessage");
