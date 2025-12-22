@@ -42,7 +42,12 @@ function buildElementsObject(elementType) {
   const elementsObject = {};
   Object.keys(indexHtmlElements[elementType]).forEach((key) => {
     const keyId = indexHtmlElements[elementType][key];
-    elementsObject[key] = document.getElementById(keyId);
+    // validate the assignment first, prevents null assignments
+    const element = document.getElementById(keyId);
+    if (!element) {
+      throw new Error(`${elementType} element not found in HTML: #${keyId}`);
+    }
+    elementsObject[key] = element;
   });
   return elementsObject;
 }
@@ -50,6 +55,7 @@ export const inputElements = buildElementsObject("input");
 export const errorElements = buildElementsObject("error");
 export const formElements = buildElementsObject("form");
 
-export const dynamicMessage = document.getElementById("dynamicMessage");
-
-export const submitButton = document.getElementById("submitBtn");
+export const dynamicMessage =
+  /** @type {HTMLSpanElement} */ (document.getElementById("dynamicMessage"));
+export const submitButton =
+  /** @type {HTMLButtonElement} */ (document.getElementById("submitBtn"));

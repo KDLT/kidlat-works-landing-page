@@ -8,7 +8,7 @@
  * One of its properties is ValidationError defined above
  * @typedef {Object} ValidationResult
  * @property {boolean} isValid - Whether validation passed
- * @property {string} error - error details
+ * @property {string} errorMessage - error details
  */
 
 // ==========================================================================
@@ -18,17 +18,10 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const nameRegex = /[a-zA-Z]{1,}/;
 const mobileRegex = /^(\+63\s?|0)?9\d{2}\s?\d{3}\s?\d{4}$/;
 
-// TODO do away with the error object. turns out i'm only using the message
-// i never needed to specify if it was invalid or empty
 /** @type {ValidationResult} */
 const validObject = {
   isValid: true,
-  error: "",
-  // error: {
-  //   invalid: false,
-  //   empty: false,
-  //   message: "",
-  // },
+  errorMessage: "",
 };
 
 /**
@@ -36,17 +29,18 @@ const validObject = {
  * @param {string} trimmedName - name string with leading and trailing whitespaces removed
  * @returns {ValidationResult} - object containing the validity and error details of the input
  */
+// TODO test if export function validateInput needs export
 export function validateName(trimmedName) {
   if (trimmedName === "") {
     return {
       isValid: false,
-      error: "First name will do.",
+      errorMessage: "First name will do.",
     };
   }
   if (!nameRegex.test(trimmedName)) {
     return {
       isValid: false,
-      error: `Is your name really ${trimmedName}?`,
+      errorMessage: `Is your name really ${trimmedName}?`,
     };
   }
   return validObject;
@@ -61,13 +55,13 @@ export function validateEmail(trimmedEmail) {
   if (trimmedEmail === "") {
     return {
       isValid: false,
-      error: "Email cannot be empty.",
+      errorMessage: "Email cannot be empty.",
     };
   }
   if (!emailRegex.test(trimmedEmail)) {
     return {
       isValid: false,
-      error: "Valid email, please.",
+      errorMessage: "Valid email, please.",
     };
   }
   return validObject;
@@ -83,14 +77,22 @@ export function validateMobile(numberString) {
   if (sanitizedMobile === "") {
     return {
       isValid: false,
-      error: "Mobile number, please.",
+      errorMessage: "Mobile number, please.",
     };
   }
   if (!mobileRegex.test(sanitizedMobile)) {
     return {
       isValid: false,
-      error: "Valid mobile, please.",
+      errorMessage: "Valid mobile, please.",
     };
   }
   return validObject;
 }
+
+// this is the only object i need to export (maybe)
+// it has to be mapped to which input uses which function
+export const validationFunctions = {
+  name: validateName,
+  email: validateEmail,
+  mobile: validateMobile,
+};

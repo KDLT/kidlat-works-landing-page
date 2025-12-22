@@ -9,4 +9,6 @@ package-lock.json
 GEMINI.md
 CLAUDE.md
 Handoff.md
+claude-response.md
+gemini-to-claude-handoff.md
 test.js

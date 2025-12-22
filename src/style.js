@@ -14,9 +14,8 @@ export function styleOnEditMode(inputElement, errorElement) {
 }
 
 export function styleOnSuccess() {
-  // emailInput.value = "";
-  // nameInput.value = "";
-  inputElements.name.disabled = true;
-  inputElements.email.disabled = true;
+  Object.keys(inputElements).forEach((key) => {
+    inputElements[key].disabled = true;
+  });
   dynamicMessage.textContent = `Welcome, ${inputElements.name.value}.`;
 }
