@@ -1,23 +1,22 @@
-import {
-  dynamicMessage,
-  emailError,
-  emailInput,
-  nameInput,
-} from "./domactions";
+import { dynamicMessage, inputElements } from "./domactions";
 
-export function styleOnEditMode() {
-  // applied when the user is actively inputting email
-  // removes the red text and border, easier on the eyes
-  emailInput.classList.remove("invalid");
-  emailError.classList.add("editing");
-  // emailError.textContent = "";
-  nameInput.classList.add("hidden");
+/**
+ * @param {object} inputElement - html input element
+ * @param {object} errorElement - html error element for corresponding input
+ */
+export function styleOnEditMode(inputElement, errorElement) {
+  // removes error styles depending on which input is being edited
+  // can be: nameInput, emailInput, or mobileInput
+  inputElement.classList.remove("invalid");
+  inputElement.classList.add("editing");
+  // inputElementError.classList.add("editing");
+  errorElement.classList.add("hidden");
 }
 
 export function styleOnSuccess() {
   // emailInput.value = "";
   // nameInput.value = "";
-  nameInput.disabled = true;
-  emailInput.disabled = true;
-  dynamicMessage.textContent = `Welcome, ${nameInput.value}.`;
+  inputElements.name.disabled = true;
+  inputElements.email.disabled = true;
+  dynamicMessage.textContent = `Welcome, ${inputElements.name.value}.`;
 }

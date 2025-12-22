@@ -18,24 +18,29 @@
           <span id="dynamicMessage"> Let's Cook. 2026. </span>
         </p>
         <div id="formContainer">
+          <form id="nameForm" novalidate>
+            <input id="nameInput" type="text" name="name" placeholder="Name*" />
+            <span id="nameError" class="error-message hidden"></span>
+          </form>
           <form id="emailForm" novalidate>
             <input
               id="emailInput"
               name="email"
               type="email"
-              placeholder="your@email.here"
+              placeholder="Email*"
             />
-            <span id="emailError" class="error-message editing"></span>
+            <span id="emailError" class="error-message hidden"></span>
           </form>
-          <form id="nameForm" novalidate>
+          <form id="mobileForm" novalidate>
             <input
-              id="nameInput"
-              type="text"
-              name="name"
-              placeholder="First name will do."
-              class="name-input hidden"
+              id="mobileInput"
+              name="mobile"
+              type="tel"
+              placeholder="Phone Number*"
             />
+            <span id="mobileError" class="error-message hidden"></span>
           </form>
+          <button id="submitBtn">Submit</button>
         </div>
       </div>
     </main>

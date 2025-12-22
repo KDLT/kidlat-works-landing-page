@@ -9,10 +9,8 @@
   --logo-input-width-mobile: 380px;
 }
 
-html,
-body {
+html {
   height: 100%;
-  overflow: hidden;
 }
 
 body {
@@ -26,6 +24,8 @@ body {
   /* for mobile devices */
   min-height: 100dvh;
 
+  overscroll-behavior-y: none;
+
   /* flexbox settings */
   display: flex;
   flex-direction: column;
@@ -34,8 +34,9 @@ body {
   gap: 2rem;
 
   /* Locks body in place for mobile */
-  position: fixed;
-  width: 100%;
+  /* overflow: hidden; */
+  /* position: fixed; */
+  /* width: 100%; */
 }
 
 main {
@@ -47,6 +48,16 @@ main {
   align-items: center;
   /* justify-content: space-around; */
   box-sizing: border-box;
+}
+
+/* #nameError, */
+/* #emailError, */
+/* #mobileError { */
+/*   display: none; */
+/* } */
+
+form {
+  position: relative;
 }
 
 #right {
@@ -128,36 +139,36 @@ UTILITY CLASSES
 ============================================================
 */
 .error-message {
+  /* remove from document flow */
+  position: absolute;
+  /* 100% bottom of form + 8px space */
+  /* top: calc(100% + 8px); */
+  top: calc(100%);
+  left: 50%;
+  /* center horizontally  */
+  transform: translateX(-50%);
+  /* make it appear on top */
+  z-index: 1000;
+
   color: var(--error);
-  /* red for errors */
-  font-size: 0.93rem;
-  margin-top: 0.5rem;
-  display: block;
-  height: 1.2rem;
+  /* color: white; */
+  /* background-color: rgba(220, 53, 69, 0.75); */
+  background-color: var(--input-bg);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  /* display: none; */
   /* visibility: hidden; */
+  /* height: 1.2rem; */
 }
 
 .editing {
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  visibility: visible;
 }
 
 .hidden {
   display: none;
-}
-
-/*
-============================================================
-DYNAMICALLY CREATED ELEMENTS
-============================================================
-*/
-
-.name-input:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.name-input::placeholder {
-  color: var(--text-secondary);
 }
 
 /*

@@ -1,6 +1,12 @@
-.env
 node_modules/
+dist/
+docs/
+.env
+
 package-lock.json
 *.bak
+
 GEMINI.md
 CLAUDE.md
+Handoff.md
+test.js

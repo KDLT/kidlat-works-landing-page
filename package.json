@@ -8,7 +8,7 @@
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview --host",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "docs": "jsdoc *.js -d docs"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,8 @@
   "homepage": "https://github.com/KDLT/kidlat-works-landing-page#readme",
   "dependencies": {
     "vite": "^7.2.7"
+  },
+  "devDependencies": {
+    "jsdoc": "^4.0.5"
   }
 }

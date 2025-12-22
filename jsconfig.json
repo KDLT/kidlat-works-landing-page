@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "types": [
+      "vite/client"
+    ]
+  },
+  "include": [
+    "*.js",
+    "*.d.ts"
+  ]
+}
