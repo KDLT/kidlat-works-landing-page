@@ -7,10 +7,10 @@ import {
 } from "./domactions";
 import { styleOnEditMode } from "./style";
 
-console.log(inputElements);
-console.log(errorElements);
-console.log(formElements);
-console.log(submitButton);
+// console.log(inputElements);
+// console.log(errorElements);
+// console.log(formElements);
+// console.log(submitButton);
 
 function init() {
   // adds input listeners by looping through the inputElements object

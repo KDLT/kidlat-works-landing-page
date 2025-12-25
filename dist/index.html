@@ -2,35 +2,47 @@
 <html lang="en">
   <head>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <!-- <script type="module" src="main.js"></script> -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KIDLAT WORKS - Cooking...</title>
-    <script type="module" crossorigin src="/assets/index-MEbBv0ma.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CqOO1oHs.css">
+    <script type="module" crossorigin src="/assets/index-pBwDdHJL.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-C6_VFNVz.css">
   </head>
 
   <body>
     <main>
       <img id="logo" src="/logo.svg" alt="kidlat-works-logo" />
-      <h1>KIDLAT WORKS</h1>
-      <p>
-        <span id="dynamicMessage"> Let's Cook. 2026. </span>
-      </p>
-      <div id="formContainer">
-        <input
-          id="emailInput"
-          name="email"
-          type="email"
-          placeholder="your@email.here"
-        />
-        <span id="emailError" class="error-message editing"></span>
-        <input
-          id="nameInput"
-          type="text"
-          name="name"
-          placeholder="First name will do."
-          class="name-input hidden"
-        />
+      <div id="right">
+        <h1>KIDLAT WORKS</h1>
+        <p>
+          <span id="dynamicMessage"> Let's Cook. 2026. </span>
+        </p>
+        <div id="formContainer">
+          <form id="nameForm" novalidate>
+            <input id="nameInput" type="text" name="name" placeholder="Name*" />
+            <span id="nameError" class="error-message hidden"></span>
+          </form>
+          <form id="emailForm" novalidate>
+            <input
+              id="emailInput"
+              name="email"
+              type="email"
+              placeholder="Email*"
+            />
+            <span id="emailError" class="error-message hidden"></span>
+          </form>
+          <form id="mobileForm" novalidate>
+            <input
+              id="mobileInput"
+              name="mobile"
+              type="tel"
+              placeholder="Phone Number*"
+            />
+            <span id="mobileError" class="error-message hidden"></span>
+          </form>
+          <button id="submitBtn">Submit</button>
+        </div>
       </div>
     </main>
   </body>
