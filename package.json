@@ -21,10 +21,9 @@
     "url": "https://github.com/KDLT/kidlat-works-landing-page/issues"
   },
   "homepage": "https://github.com/KDLT/kidlat-works-landing-page#readme",
-  "dependencies": {
-    "vite": "^7.2.7"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "jsdoc": "^4.0.5"
+    "jsdoc": "^4.0.5",
+    "vite": "^7.2.7"
   }
 }
