@@ -1,3 +1,4 @@
+import { submitSubscription } from "./lib/api";
 import { validationFunctions } from "./validation";
 import {
   reportValidState,
@@ -63,10 +64,12 @@ export function handleInputSubmit(inputElementKey) {
   return result.isValid;
 }
 
+// made the the handleFinalSubmit function async
+// previously this @returns {object} but i encountered an error stating this should return Promise<T>
 /**
- * @returns {object} - outputs the app state
+ * @returns {Promise<Object>} - outputs the app state
  */
-export function handleFinalSubmit() {
+export async function handleFinalSubmit() {
   let allValid = true;
   // loop through all inputs, one invalid input makes allValid false
   for (const input of inputList) {
@@ -76,7 +79,21 @@ export function handleFinalSubmit() {
   if (allValid) {
     setDateTime();
     styleOnSuccess();
-    reportValidState();
+    // added to communicate with the backend
+    const validatedUser = reportValidState();
+
+    try {
+      // send data to backend
+      const data = await submitSubscription(validatedUser);
+
+      console.log("✅ Subscription successful: ", data);
+      // could update UI here to show success message
+    } catch (error) {
+      console.error("❌ Subscription failed: ", error.message);
+      // could update the UI here to show error message
+      setError(error.message);
+      render();
+    }
   }
   // return state; // return state regardless
 }

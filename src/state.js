@@ -1,21 +1,3 @@
-/**
- * @typedef {Object} FieldState - the field type inside AppState
- * @property {string} value - which input field
- * @property {boolean} isValid - is the current input valid
- * What it does.
- */
-
-/**
- * @typedef {Object} AppState
- * @property {FieldState} name - Name field state
- * @property {FieldState} email - Email field state
- * @property {FieldState} mobile - Mobile field state
- * @property {string} previousStep - Previous validation step
- * @property {string} currentStep - Current validation step
- * @property {string} errorMessage - Current error message
- * @property {string} datetime - Timestamp captured when form completes
- */
-
 /** @type {AppState} */
 export const state = {
   name: {
@@ -71,9 +53,16 @@ export function setDateTime() {
   state.datetime = Date();
 }
 
-// i plan to use the reportValidState
-// when passing information to the backend
+/**
+ * returns validated user data, excludes other parts of the appstate
+ * @returns {ValidUser} - declared in types.d.ts
+ */
 export function reportValidState() {
   console.log(state);
-  return state;
+  return {
+    name: state.name.value,
+    email: state.email.value,
+    mobile: state.mobile.value,
+    creationTime: state.datetime,
+  };
 }
