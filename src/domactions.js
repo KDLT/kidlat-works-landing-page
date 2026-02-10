@@ -1,61 +1,223 @@
-// this is based on the contents of index.html
-// values are supposed to be EXACT html id strings
-// I ONLY NEED TO CHANGE THESE NOW
-export const indexHtmlElements = {
-  // primary object keys are elementTypes
-  // except error, this is supposed to be span
-  // but span is not descriptive
-  input: {
-    name: "nameInput",
-    email: "emailInput",
-    mobile: "mobileInput",
-  },
-  form: {
-    name: "nameForm",
-    email: "emailForm",
-    mobile: "mobileForm",
-  },
-  error: {
-    name: "nameError",
-    email: "emailError",
-    mobile: "mobileError",
-  },
-  button: "submitBtn",
-};
-
-function buildInputList() {
-  const inputList = [];
-  Object.keys(indexHtmlElements.input).forEach((element) => {
-    inputList.push(element);
-  });
-  return inputList;
-}
-// console.log(buildInputList());
-export const inputList = buildInputList();
+import { handleInputSubmit } from "./formHandlers";
 
 /**
- * builds input, form, error elements
- * based on the IDs declared in indexHtmlElements
- * @param {string} elementType - primary keys in indexHtmlElements (input, email, mobile)
+ * Type definition for applied to each schema field
+ * @typedef {Object} FieldSchema
+ * @property {RegExp} pattern - regex pattern used for validating the input
+ * @property {string} emptyMessage - message for when user attempts to submit empty form
+ * @property {string} invalidMessage - message for when validation fails
+ * @property {(value: string) => string} sanitize - returns trimmed string pre-validation
+ * @property {string} inputType - input type attribute of HTML element
+ * @property {string} placeholder - placeholder for the input form
  */
-function buildElementsObject(elementType) {
-  const elementsObject = {};
-  Object.keys(indexHtmlElements[elementType]).forEach((key) => {
-    const keyId = indexHtmlElements[elementType][key];
-    // validate the assignment first, prevents null assignments
-    const element = document.getElementById(keyId);
-    if (!element) {
-      throw new Error(`${elementType} element not found in HTML: #${keyId}`);
-    }
-    elementsObject[key] = element;
-  });
-  return elementsObject;
-}
-export const inputElements = buildElementsObject("input");
-export const errorElements = buildElementsObject("error");
-export const formElements = buildElementsObject("form");
 
-export const dynamicMessage =
-  /** @type {HTMLSpanElement} */ (document.getElementById("dynamicMessage"));
-export const submitButton =
-  /** @type {HTMLButtonElement} */ (document.getElementById("submitBtn"));
+// IMPORTANT: This should match the ID of the div that contains all the forms
+const formContainer = /** @type {HTMLDivElement} */ (
+  document.getElementById("formContainer")
+);
+
+export default class DOM {
+  /** @type {Record<string,FieldSchema>} */
+  static #schema = {
+    name: {
+      pattern: /[a-zA-Z]{1,}/,
+      emptyMessage: "First name will do.",
+      invalidMessage: "Is your name really {value}?",
+      sanitize: (value) => value.trim(),
+      inputType: "text",
+      placeholder: "Name******",
+    },
+    email: {
+      pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      emptyMessage: "Email cannot be empty",
+      invalidMessage: "Please provide a valid email.",
+      sanitize: (value) => value.trim(),
+      inputType: "email",
+      placeholder: "Email******",
+    },
+    mobile: {
+      pattern: /^(\+63\s?|0)?9\d{2}\s?\d{3}\s?\d{4}$/,
+      emptyMessage: "Please provide a mobile number",
+      invalidMessage: "Please provide a valid mobile number",
+      sanitize: (value) => value.replace(/\s/g, ""),
+      inputType: "tel",
+      placeholder: "MobileNumber******",
+    },
+    address: {
+      pattern: /^(\+63\s?|0)?9\d{2}\s?\d{3}\s?\d{4}$/,
+      emptyMessage: "Please provide a mobile number",
+      invalidMessage: "Please provide a valid mobile number",
+      sanitize: (value) => value.trim(),
+      inputType: "text",
+      placeholder: "Address*****",
+    },
+  };
+
+  /**
+   * @param {string} field - field to create input for, these are keys in the schema
+   * @param {string} type - type attribute for the input HTML element
+   * @param {string} placeholder - placeholder attribute for the HTML input element
+   * @returns {HTMLInputElement} the resulting pointer to the HTML Input element just created
+   */
+  static #createInput(field, type, placeholder) {
+    const input = document.createElement("input");
+    input.setAttribute("id", `${field}Input`);
+    input.setAttribute("type", type);
+    input.setAttribute("placeholder", placeholder);
+    input.setAttribute("aria-label", field);
+    return input;
+  }
+
+  /**
+   * @param {string} field - field to create error span for
+   * @returns {HTMLSpanElement} resulting pointer to the HTML span element just created
+   */
+  static #createErrorSpan(field) {
+    const error = document.createElement("span");
+    error.setAttribute("id", `${field}Error`);
+    error.setAttribute("class", "error-message hidden");
+    error.setAttribute("role", "alert");
+    error.setAttribute("aria-live", "polite");
+    return error;
+  }
+
+  /**
+   * @param {string} field - field to create form for, see keys in #schema
+   * @param {HTMLInputElement} input - the input element as the first child of this form element
+   * @param {HTMLSpanElement} error - the span element to contain the error text
+   * @param {HTMLDivElement} container - hardcoded Div from the html file where the form gets appended
+   * @returns {HTMLFormElement} the resulting form with input and span within
+   */
+  static #formBuilder(field, input, error, container) {
+    const form = document.createElement("form");
+    form.setAttribute("id", `${field}Form`);
+    form.setAttribute("novalidate", "");
+    form.appendChild(input);
+    form.appendChild(error);
+    container.appendChild(form);
+    return form;
+  }
+
+  /**
+   * removes all styling on any given input being modified
+   * @param {HTMLInputElement} inputElement - generated by createInput
+   * @param {HTMLSpanElement} errorElement - generated by createErrorSpan
+   */
+  static #addInputListener(inputElement, errorElement) {
+    inputElement.addEventListener("input", () => {
+      inputElement.classList.remove("invalid");
+      inputElement.classList.remove("valid");
+      inputElement.classList.add("editing");
+      errorElement.classList.add("hidden");
+    });
+  }
+
+  /**
+   * @param {HTMLFormElement} formElement - generated by formBuilder
+   */
+  static #addFormListener(formElement) {
+    formElement.addEventListener("submit", (event) => {
+      event.preventDefault();
+      // removes the "Form" string at the end to get the field name
+      const formFieldString = formElement.id.slice(0, -4);
+      const inputField = this.getInput(formFieldString);
+      handleInputSubmit(inputField);
+    });
+  }
+
+  static buildAll() {
+    Object.keys(this.#schema).forEach((field) => {
+      const container = formContainer;
+      const input = this.#createInput(
+        field,
+        this.#schema[field].inputType,
+        this.#schema[field].placeholder,
+      );
+      const error = this.#createErrorSpan(field);
+      this.#addInputListener(input, error);
+
+      this.#addFormListener(this.#formBuilder(field, input, error, container));
+    });
+  }
+
+  static get fieldsList() {
+    return Object.keys(this.#schema);
+  }
+
+  static get inputsList() {
+    const list = [];
+    this.fieldsList.forEach((field) => {
+      list.push(document.getElementById(`${field}Input`));
+    });
+    return list;
+  }
+
+  /**
+   * @param {string} field - keys on schema record (name, email, mobile, address)
+   * @returns {HTMLInputElement} corresnponding HTML Input element
+   */
+  static getInput(field) {
+    return /** @type{HTMLInputElement} */ (
+      document.getElementById(`${field}Input`)
+    );
+  }
+
+  // WIP create a static method for adding event listeners for all built inputs, forms
+  // MAYBE it's better to attach event listeners upon building the input and forms inside buildAll()
+}
+
+// gets built FIRST, consider putting this in main.js
+DOM.buildAll();
+// console.log(DOM.getInput("mobile"));
+// console.log("inputList: ", DOM.inputList);
+// console.log("addinputListener: ", DOM.addInputListener("name"));
+
+/**
+ * Deliberately tells the lsp that this never completes normally
+ * @param {string} elementId - element id attribute
+ * @returns {never}
+ */
+function throwMissing(elementId) {
+  throw new Error(`Element not found in HTML: #${elementId}`);
+}
+
+export const inputList = DOM.fieldsList;
+
+// export const inputElements = /** @type {Record<string, HTMLInputElement>} */ (
+//   Object.fromEntries(
+//     inputList.map((field) => [
+//       field,
+//       document.getElementById(`${field}Input`) ?? throwMissing(`${field}Input`),
+//     ]),
+//   )
+// );
+
+export const domInputsList = DOM.inputsList;
+console.log("inputElements inside domactions: ", domInputsList);
+// console.log("inputElements: ", inputElements);
+
+export const errorElements = /** @type {Record<string, HTMLSpanElement>} */ (
+  Object.fromEntries(
+    inputList.map((field) => [
+      field,
+      document.getElementById(`${field}Error`) ?? throwMissing(`${field}Error`),
+    ]),
+  )
+);
+export const formElements = /** @type {Record<string, HTMLFormElement>} */ (
+  Object.fromEntries(
+    inputList.map((field) => [
+      field,
+      document.getElementById(`${field}Form`) ?? throwMissing(`${field}Form`),
+    ]),
+  )
+);
+
+console.log("formElements: ", formElements);
+
+export const dynamicMessage = /** @type {HTMLSpanElement} */ (
+  document.getElementById("dynamicMessage")
+);
+export const submitButton = /** @type {HTMLButtonElement} */ (
+  document.getElementById("submitBtn")
+);

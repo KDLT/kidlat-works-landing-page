@@ -1,21 +1,36 @@
-import { dynamicMessage, inputElements } from "./domactions";
+import { dynamicMessage, domInputsList, submitButton } from "./domactions";
 
-/**
- * @param {object} inputElement - html input element
- * @param {object} errorElement - html error element for corresponding input
- */
-export function styleOnEditMode(inputElement, errorElement) {
-  // removes error styles depending on which input is being edited
-  // can be: nameInput, emailInput, or mobileInput
-  inputElement.classList.remove("invalid");
-  inputElement.classList.add("editing");
-  // inputElementError.classList.add("editing");
-  errorElement.classList.add("hidden");
+// export function styleOnSuccess() {
+//   Object.keys(inputElements).forEach((key) => {
+//     inputElements[key].disabled = true;
+//   });
+//   dynamicMessage.textContent = `Welcome, ${inputElements.name.value}.`;
+// }
+export function styleOnSuccess() {
+  domInputsList.forEach((input) => {
+    input.disabled = true;
+  });
+  dynamicMessage.textContent = `Welcome,asdf sadf`;
 }
 
-export function styleOnSuccess() {
-  Object.keys(inputElements).forEach((key) => {
-    inputElements[key].disabled = true;
+// export function styleOnFailure() {
+//   Object.keys(inputElements).forEach((key) => {
+//     inputElements[key].disabled = false;
+//   });
+// }
+
+export function styleOnFailure() {
+  domInputsList.forEach((input) => {
+    input.disabled = false;
   });
-  dynamicMessage.textContent = `Welcome, ${inputElements.name.value}.`;
+}
+
+export function styleOnSubmitting() {
+  submitButton.disabled = true;
+  submitButton.textContent = `Submitting...`;
+}
+
+export function styleOnSubmitComplete() {
+  submitButton.disabled = false;
+  submitButton.textContent = `Submitted`;
 }

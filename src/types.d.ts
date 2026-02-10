@@ -1,21 +1,11 @@
-// represents a single form field's state
-type FieldState = {
+/** the format of the object returned by Validate.field() method */
+type ValidationResult = {
   value: string;
   isValid: boolean;
-};
-
-// complete application state
-type AppState = {
-  name: FieldState;
-  email: FieldState;
-  mobile: FieldState;
-  previousStep: string;
-  currentStep: string;
   errorMessage: string;
-  datetime: string;
 };
 
-// validated user data ready for submission to backend
+/** validated user data ready for submission to backend */
 type ValidUser = {
   name: string;
   email: string;
@@ -23,13 +13,13 @@ type ValidUser = {
   creationTime: string;
 };
 
-// API response from backend subscription endpoint
+/** API response from backend subscription endpoint */
 type SubscriptionResponse = {
   message: string;
 };
 
-// API error response structure
-type ApiError = {
-  error: string;
-  message?: string;
+/** API error response structure */
+type ErrorInfo = {
+  type: string;
+  message: string;
 };

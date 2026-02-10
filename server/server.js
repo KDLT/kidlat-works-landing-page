@@ -9,7 +9,7 @@ const HOST = process.env.HOST || "0.0.0.0";
 const corsOptions = {
   origin: [
     "http://localhost:5173", // mac
-    "http://192.168.1.55:5173", // other devices if any
+    "http://192.168.1.36:5173", // other devices if any
   ],
   credentials: true,
 };
@@ -22,7 +22,10 @@ app.get("/", (req, res) => {
   res.send(`<h1>Welcome to the home page</h1><p>this is from server.js</p>`);
 });
 
-app.post("/api/subscribe", (req, res) => {
+app.post("/api/subscribe", async (req, res) => {
+  // uncomment below to set artificial delay for testing timeout
+  // await new Promise((resolve) => setTimeout(resolve, 100));
+
   console.log(`user-agent: ${req.get("User-Agent")}`);
   // console.log(`req.body: ${req.body}`)
   // object destructuring

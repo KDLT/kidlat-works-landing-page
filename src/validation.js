@@ -3,96 +3,76 @@
 // ==========================================================================
 
 /**
- * Creates a new Type called ValidationResult
- * These are the formats of the returns of the export functions below
- * One of its properties is ValidationError defined above
- * @typedef {Object} ValidationResult
- * @property {boolean} isValid - Whether validation passed
- * @property {string} errorMessage - error details
+ * Type definition for applied to each schema field
+ * @typedef {Object} FieldSchema
+ * @property {RegExp} pattern - regex pattern used for validating the input
+ * @property {string} emptyMessage - message for when user attempts to submit empty form
+ * @property {string} invalidMessage - message for when validation fails
+ * @property {(value: string) => string} sanitize - returns trimmed string pre-validation
  */
-
-// ==========================================================================
-// REGULAR EXPRESSION FOR EMAIL VALIDATION
-// ==========================================================================
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const nameRegex = /[a-zA-Z]{1,}/;
-const mobileRegex = /^(\+63\s?|0)?9\d{2}\s?\d{3}\s?\d{4}$/;
-
-/** @type {ValidationResult} */
-const validObject = {
-  isValid: true,
-  errorMessage: "",
-};
 
 /**
- * Validates the name input
- * @param {string} trimmedName - name string with leading and trailing whitespaces removed
- * @returns {ValidationResult} - object containing the validity and error details of the input
+ * type definition for convenience functions that call static field
+ * @typedef {function(string): ValidationResult} ConvenienceFn
  */
-// TODO test if export function validateInput needs export
-export function validateName(trimmedName) {
-  if (trimmedName === "") {
-    return {
-      isValid: false,
-      errorMessage: "First name will do.",
-    };
-  }
-  if (!nameRegex.test(trimmedName)) {
-    return {
-      isValid: false,
-      errorMessage: `Is your name really ${trimmedName}?`,
-    };
-  }
-  return validObject;
-}
 
-/**
- * Validates the email input
- * @param {string} trimmedEmail - email string with leading and trailing whitespaces removed
- * @returns {ValidationResult} - object containing the validity and error details of the input
- */
-export function validateEmail(trimmedEmail) {
-  if (trimmedEmail === "") {
-    return {
-      isValid: false,
-      errorMessage: "Email cannot be empty.",
-    };
-  }
-  if (!emailRegex.test(trimmedEmail)) {
-    return {
-      isValid: false,
-      errorMessage: "Valid email, please.",
-    };
-  }
-  return validObject;
-}
+export class Validate {
+  /** @type {Record<string, FieldSchema>} */
+  static #schema = {
+    name: {
+      pattern: /[a-zA-Z]{1,}/,
+      emptyMessage: "First name will do.",
+      invalidMessage: "Is your name really {value}?",
+      sanitize: (value) => value.trim(),
+      // line above doesn't work, i want to refer to the value of name.domInput, name.domError how do I reference those?
+    },
+    email: {
+      pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      emptyMessage: "Email cannot be empty",
+      invalidMessage: "Please provide a valid email.",
+      sanitize: (value) => value.trim(),
+    },
+    mobile: {
+      pattern: /^(\+63\s?|0)?9\d{2}\s?\d{3}\s?\d{4}$/,
+      emptyMessage: "Please provide a mobile number",
+      invalidMessage: "Please provide a valid mobile number",
+      sanitize: (value) => value.replace(/\s/g, ""),
+    },
+    // address: {
+    //   pattern: /^(\+63\s?|0)?9\d{2}\s?\d{3}\s?\d{4}$/,
+    //   emptyMessage: "Please provide a mobile number",
+    //   invalidMessage: "Please provide a valid mobile number",
+    //   sanitize: (value) => value.replace(/\s/g, ""),
+    // },
+  };
 
-/**
- * Validates the mobile input
- * @param {string} numberString - mobile number with ALL whitespaces removed
- * @returns {ValidationResult} - object containing the validity and error details of the input
- */
-export function validateMobile(numberString) {
-  const sanitizedMobile = numberString.replace(/\s/g, "");
-  if (sanitizedMobile === "") {
-    return {
-      isValid: false,
-      errorMessage: "Mobile number, please.",
-    };
+  /**
+   * Static getter than returns all field names defined in the schema property
+   * @returns {string[]}
+   */
+  static get fields() {
+    return Object.keys(this.#schema);
   }
-  if (!mobileRegex.test(sanitizedMobile)) {
-    return {
-      isValid: false,
-      errorMessage: "Valid mobile, please.",
-    };
-  }
-  return validObject;
-}
 
-// this is the only object i need to export (maybe)
-// it has to be mapped to which input uses which function
-export const validationFunctions = {
-  name: validateName,
-  email: validateEmail,
-  mobile: validateMobile,
-};
+  /**
+   * @param {string} field - which field to validate
+   * @param {string} value - provided value to the field being validated
+   * @returns {ValidationResult}
+   */
+  static field(field, value) {
+    const rules = this.#schema[field];
+    if (!rules) throw new Error(`Unknown field: ${field}`);
+
+    const sanitizedValue = rules.sanitize(value);
+    if (sanitizedValue === "")
+      return { isValid: false, errorMessage: rules.emptyMessage, value: "" };
+    if (!rules.pattern.test(sanitizedValue))
+      return {
+        isValid: false,
+        errorMessage: rules.invalidMessage.replace("{value}", sanitizedValue),
+        value: "",
+      };
+
+    return { isValid: true, errorMessage: "", value: sanitizedValue };
+  }
+}

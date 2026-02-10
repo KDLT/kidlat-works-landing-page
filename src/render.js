@@ -1,19 +1,18 @@
-import { state } from "./state";
-import { errorElements, inputElements } from "./domactions";
+import { State } from "./state";
+import { errorElements, domInputsList } from "./domactions";
+import DOM from "./domactions";
 
 export function render() {
-  const currentStep = state.currentStep;
-  const currentInputElement = inputElements[currentStep];
-  const currentErrorElement = errorElements[currentStep];
-  const isCurrentStepValid = state[currentStep].isValid;
-  if (!isCurrentStepValid) {
-    currentErrorElement.textContent = state.errorMessage;
-    currentErrorElement.classList.remove("hidden");
-    currentErrorElement.classList.remove("editing");
-    setTimeout(() => {
-      currentErrorElement.classList.add("hidden");
-    }, 1000);
-    currentInputElement.classList.add("invalid");
-  }
-  console.log("in render. state check:", state);
+  const currentField = State.current;
+  if (!State.isCurrentStepValid) {
+    errorElements[currentField].textContent = State.error;
+    errorElements[currentField].classList.remove("hidden");
+    errorElements[currentField].classList.remove("editing");
+    // setTimeout(() => {
+    //   currentErrorElement.classList.add("hidden");
+    // }, 1000);
+    DOM.getInput(currentField).classList.add("invalid");
+    // inputElements[currentField].classList.add("invalid");
+  } else DOM.getInput(currentField).classList.add("valid");
+  console.log("State.getAll: ", State.getAll);
 }
