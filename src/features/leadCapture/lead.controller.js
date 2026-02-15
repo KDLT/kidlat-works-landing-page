@@ -1,70 +1,49 @@
 import Lead from "./lead.model";
-import { LeadSchema } from "./lead.schema";
+import LeadView from "./lead.view";
 
-// trying out putting view here with the controller then I'd separate it later
-export class LeadView {
-  constructor(container) {
-    this.container = container;
-    this.inputs = {};
-  }
+/**
+ * @param {HTMLFormElement} container - HTML form that would contain all this
+ * @param {Object} schema - the schema, for leads it's LeadSchema
+ */
+export default function initLeadController(container, schema) {
+  const model = new Lead();
+  const view = new LeadView(container, schema);
+  const form = view.render();
+  console.log("form after render: ", form);
 
-  // why is static not working here? How do I make private methods because # also didn't work
-  #createInput(field) {
-    const input = document.createElement("input");
-    const fieldAttributes = LeadSchema[field].attributes;
-    Object.keys(fieldAttributes).forEach((attribute) => {
-      input.setAttribute(attribute, fieldAttributes[attribute]);
-    });
-    // input.setAttribute("id", `${field}Input`);
-    // input.setAttribute("type", type);
-    // input.setAttribute("placeholder", placeholder);
-    // input.setAttribute("aria-label", field);
-    return input;
-  }
-
-  // render builds the forms based on the schema
-  render() {
-    const form = document.createElement("form");
-    form.setAttribute("id", "leadForm");
-
-    for (const field in LeadSchema) {
-      form.appendChild(this.#createInput(field));
-      // this.#createInput(field);
-    }
-
-    this.container.appendChild(form);
-    const submitBtn = document.createElement("button");
-    submitBtn.textContent = "Submit";
-    submitBtn.setAttribute("id", "submitBtn");
-    this.container.appendChild(submitBtn);
-
-    // this.inputs[field] = input;
-    // form.appendChild(input);
-
-    return this.container;
-  }
-
-  markInvalid() {
-    // WIP styleOnFailure
-  }
-
-  clearInvalid() {
-    // WIP styleOnEditMode originally, addInputListener contains these rules now
-  }
-}
-
-export default class LeadController {
-  constructor(view) {
-    this.lead = new Lead(LeadSchema); // new Lead inherently has its own methods for input validation
-    this.view = view; // pending view WIP
-  }
-
-  handleInput(field, value) {
-    this.lead.set(field, value);
-    if (this.lead.errors[field]) {
-      this.view.markInvalid(field);
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    console.log("submit pressed");
+    if (model.isValid()) {
+      console.log(`all required fields passed`);
     } else {
-      this.view.clearInvalid(field);
+      console.log("some field(s) failed");
     }
-  }
+  });
+
+  form.addEventListener("input", (event) => {
+    // Hey claude, lsp complains about event.target possibly being null
+    // it also says name does not exist on type target but it does especially since it's
+    // the input attribute string I deliberately set on my schema as it already exists as an attribute
+    const target = /** @type {HTMLInputElement} */ (event.target);
+    view.clearInvalid(target.name);
+  });
+
+  form.addEventListener("focusout", (event) => {
+    const target = /** @type {HTMLInputElement} */ (event.target);
+    const field = target.name;
+    // this exits the eventListener if field does not contain a name attribute
+    // only true for button
+    if (!field) return;
+
+    const value = target.value;
+    // model.set aftermath could contain an error
+    model.set(field, value);
+    if (model.errors[field]) {
+      view.markInvalid(field, model.errors[field]);
+    } else {
+      view.markSuccess(field);
+    }
+    // console.log("errors object from models: ", model.errors);
+  });
 }

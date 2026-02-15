@@ -103,6 +103,9 @@ input {
   text-align: center;
 
   transition: border-color 0.3s ease;
+
+  /* added this after removing form enclosing inputs and spans */
+  display: block;
 }
 
 /* prevent yellow background on iOS auto-fill */
@@ -129,52 +132,64 @@ input::placeholder {
   color: var(--text-secondary);
 }
 
-input.invalid,
-input.invalid:focus {
-  border-color: var(--error);
-}
-
-/*
-============================================================
-UTILITY CLASSES
-============================================================
+/* /* */
+/* ============================================================ */
+/* UTILITY CLASSES */
+/* ============================================================ */
+/* */
 */
-.error-message {
-  /* remove from document flow */
-  position: absolute;
-  /* 100% bottom of form + 8px space */
-  /* top: calc(100% + 8px); */
-  top: calc(100%);
-  left: 50%;
-  /* center horizontally  */
-  transform: translateX(-50%);
-  /* make it appear on top */
-  z-index: 1000;
-
-  color: var(--error);
-  /* color: white; */
-  /* background-color: rgba(220, 53, 69, 0.75); */
-  background-color: var(--input-bg);
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  /* display: none; */
-  /* visibility: hidden; */
-  /* height: 1.2rem; */
-}
-
-.editing {
-  color: var(--text-primary);
-  visibility: visible;
-}
-
-.hidden {
-  display: none;
-}
-
-.valid {
-  border-color: var(--success);
-}
+/* .error-message { */
+/*   /* remove from document flow */
+/*   * now positioned absolute wrt containing element */
+*/
+/*   position: absolute; */
+/**/
+/*   /* 100% bottom of form + 8px space */
+*/
+/*   /* top: calc(100% + 8px); */
+*/
+/*   top: calc(100%); */
+/*   left: 50%; */
+/*   /* center horizontally  */
+*/
+/*   transform: translateX(-50%); */
+/*   /* make it appear on top */
+*/
+/*   z-index: 1000; */
+/**/
+/*   color: var(--error); */
+/*   /* color: white; */
+*/
+/*   /* background-color: rgba(220, 53, 69, 0.75); */
+*/
+/*   background-color: var(--input-bg); */
+/*   padding: 8px 12px; */
+/*   border-radius: 8px; */
+/*   font-size: 0.85rem; */
+/*   /* display: none; */
+*/
+/*   /* visibility: hidden; */
+*/
+/*   /* height: 1.2rem; */
+*/
+/* } */
+/**/
+/* .editing { */
+/*   color: var(--text-primary); */
+/*   visibility: visible; */
+/* } */
+/**/
+/* .hidden { */
+/*   display: none; */
+/* } */
+/**/
+/* .valid { */
+/*   border-color: var(--success); */
+/* } */
+/* input.invalid, */
+/* input.invalid:focus { */
+/*   border-color: var(--error); */
+/* } */
 
 /*
 ============================================================

@@ -20,7 +20,7 @@
  * @property {RegExp} pattern - regex pattern used for validating the input
  * @property {InputError} error
  * @property {(value: string) => string} sanitize - returns trimmed string pre-validation
- * @property {InputAttributes} attributes - set of attributes to assign any given input
+ * @property {InputAttributes} inputAttributes - set of attributes to assign any given input
  */
 
 /** @type {Record<string, FieldSchema>} */
@@ -33,7 +33,7 @@ export const LeadSchema = {
       invalid: "Is your name really {value}?",
     },
     sanitize: (value) => value.trim(),
-    attributes: {
+    inputAttributes: {
       id: "nameInput",
       name: "name",
       type: "text",
@@ -49,7 +49,7 @@ export const LeadSchema = {
       invalid: "Please provide a valid email.",
     },
     sanitize: (value) => value.trim(),
-    attributes: {
+    inputAttributes: {
       id: "emailInput",
       name: "email",
       type: "email",
@@ -65,7 +65,7 @@ export const LeadSchema = {
       invalid: "Please provide a valid mobile number",
     },
     sanitize: (value) => value.replace(/\s/g, ""),
-    attributes: {
+    inputAttributes: {
       id: "mobileInput",
       name: "mobile",
       type: "tel",
@@ -77,11 +77,11 @@ export const LeadSchema = {
     required: false,
     pattern: /^(\+63\s?|0)?9\d{2}\s?\d{3}\s?\d{4}$/,
     error: {
-      empty: "Please provide a mobile number",
-      invalid: "Please provide a valid mobile number",
+      empty: "Please provide an address",
+      invalid: "Please provide a valid address",
     },
     sanitize: (value) => value.trim(),
-    attributes: {
+    inputAttributes: {
       id: "addressInput",
       name: "address",
       type: "text",

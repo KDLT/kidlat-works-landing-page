@@ -1,0 +1,39 @@
+/* And it's the entry point of all styling from the index.html */
+/* How do I even modularize css files? I know I've got a main.css file */
+/* I want to put these styles here since they're relevant to the lead feature */
+:root {
+  --error: #dc3545;
+  --input-bg: #121713;
+  --success: #6f9460;
+}
+
+.errorMessage {
+  position: absolute;
+  top: calc(100%);
+  transform: translateX(-50%);
+  z-index: 1000;
+  color: var(--error);
+  background-color: var(--input-bg);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.editing {
+  color: var(--text-primary);
+  visibility: visible;
+}
+
+.hidden {
+  display: none;
+}
+
+.valid,
+.valid:focus {
+  border-color: var(--success);
+}
+
+.invalid,
+.invalid:focus {
+  border-color: var(--error);
+}
