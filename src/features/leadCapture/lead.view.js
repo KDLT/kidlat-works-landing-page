@@ -9,6 +9,12 @@ export default class LeadView {
   constructor(container, schema) {
     this.container = container;
     this.schema = schema;
+
+    // yet undefined but will be populated by render(), still like to declare in the constructor
+    /** @type {NodeListOf<HTMLInputElement> | undefined} */
+    this.inputElements;
+    /** @type {HTMLButtonElement | undefined} */
+    this.submitBtn;
   }
 
   /** @typedef {Object} InputErrorObject
@@ -72,9 +78,12 @@ export default class LeadView {
     const submitBtn = document.createElement("button");
     submitBtn.textContent = "Submit";
     submitBtn.setAttribute("id", "submitBtn");
+    this.submitBtn = submitBtn;
     form.appendChild(submitBtn);
 
     this.container.appendChild(form);
+    // hey claude, inputNodes only get populated here
+    this.inputElements = form.querySelectorAll("input");
     return form;
   }
 
@@ -108,5 +117,31 @@ export default class LeadView {
   markSuccess(field) {
     const input = this.#get(field).input;
     input?.classList.add(styles.valid);
+  }
+
+  get #inputNodes() {
+    return /** @type {NodeListOf<HTMLInputElement>} */ (this.inputElements);
+  }
+
+  /**
+   * @param {HTMLInputElement} target - the input element you're coming from
+   */
+  #getInputNodeKey(target) {
+    return Object.keys(this.#inputNodes).find(
+      (key) => this.#inputNodes[key] === target,
+    );
+  }
+
+  /**
+   * @param {HTMLInputElement} target - the input element you're coming from
+   * @returns {HTMLInputElement | HTMLButtonElement}
+   */
+  getNextInput(target) {
+    const currentNodeKey = Number(this.#getInputNodeKey(target)); // coerce to number
+    const nextNodeKey = currentNodeKey + 1;
+    if (nextNodeKey >= this.#inputNodes.length) {
+      return /** @type {HTMLButtonElement} */ (this.submitBtn);
+    }
+    return this.#inputNodes[nextNodeKey];
   }
 }

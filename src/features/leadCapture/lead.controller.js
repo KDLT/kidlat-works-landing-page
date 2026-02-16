@@ -11,20 +11,32 @@ export default function initLeadController(container, schema) {
   const form = view.render();
   console.log("form after render: ", form);
 
+  form.addEventListener("keydown", (event) => {
+    // console.log(event.key);
+    if (event.key === "Enter") {
+      const target = /** @type {HTMLInputElement} */ (event.target);
+
+      // makes sure this listener does proceed when already focused on the button
+      if (view.submitBtn === target) return;
+
+      event.preventDefault(); // this preventDefault blocks for INPUTS ONLY
+      view.getNextInput(target).focus();
+    }
+  });
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     console.log("submit pressed");
     if (model.isValid()) {
       console.log(`all required fields passed`);
     } else {
-      console.log("some field(s) failed");
+      console.log("some field(s) failed, this is the error object:");
+      console.log(model.errors);
     }
   });
 
   form.addEventListener("input", (event) => {
-    // Hey claude, lsp complains about event.target possibly being null
-    // it also says name does not exist on type target but it does especially since it's
-    // the input attribute string I deliberately set on my schema as it already exists as an attribute
+    // must cast the target as HTMLInputElement
     const target = /** @type {HTMLInputElement} */ (event.target);
     view.clearInvalid(target.name);
   });
@@ -33,7 +45,7 @@ export default function initLeadController(container, schema) {
     const target = /** @type {HTMLInputElement} */ (event.target);
     const field = target.name;
     // this exits the eventListener if field does not contain a name attribute
-    // only true for button
+    // basically tells the focusout event listener to not trigger for buttons
     if (!field) return;
 
     const value = target.value;
